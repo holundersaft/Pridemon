@@ -84,10 +84,10 @@ gendergreen=74,129,35
 grey=163,163,163
 asexlila=130,0,129
 
-sourcePath = './gen2/'
+sourcePath = './colfixed/'
 
 
-for filename in os.listdir("./gen2/"):
+for filename in os.listdir("./colfixed/"):
     f = os.path.join(sourcePath, filename)
     if os.path.isfile(f):
         recolor(img=Image.open(f), color1=transBlau, color2=transPink, outputpath="./Output/trans/",output=filename[:3])
