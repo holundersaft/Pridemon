@@ -73,40 +73,11 @@ img = Image.open(imgPath)
 imgnew = img
 uniqueColors = set()
 
-#mischmascher(img,imgnew)
+mischmascher(img,imgnew)
 #baking(img=imgnew,color=30,size=800,outputname="test")
 forceTrans(img=img)
 print("done")
 
-'''
-data = np.array(img)
-r,g,b,a = data.T
-#uniqueColors = np.unique(r,g,b,a)
-print(np.unique(r))
-print(np.unique(g))
-print(np.unique(b))
-white_areas = (r > 240) & (g > 240) & (b > 240) & (a > 240)
-data[..., :-1][white_areas.T] = (255, 0, 0) # Transpose back needed 
-print(info)
-im2 = Image.fromarray(data)
-im2.save("out.png")'''
-
-
-
-
-
-'''for x in range(w):
-    for y in range(h):
-        pixel = img.getpixel((x, y))
-        uniqueColors.add(pixel)
-        rgb_im = img.convert('RGBA')
-        r, g, b, a = rgb_im.getpixel((x, y))
-
-        if(a==255):                                             #Farbaustausch>
-            if((r_prev!=r)&(g_prev!=g)&(b_prev!=b)):           #neue pixel anders als alte
-                imgnew.putpixel((y,x),(g_prev,r_prev,b_prev))
-        r_prev, g_prev, b_prev = r,g,b '''
-#totalUniqueColors = len(uniqueColors)    
 
 
 
