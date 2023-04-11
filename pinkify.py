@@ -43,8 +43,8 @@ imgnew = img
 uniqueColors = set()
 
 #mischmascher(img,imgnew)
-baking(img=imgnew,color=30,size=800,outputname="test")
-
+#baking(img=imgnew,color=30,size=800,outputname="test")
+forceTrans(img=img)
 
 
 
