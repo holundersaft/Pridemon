@@ -1,8 +1,13 @@
 from PIL import Image
 import os
+import time
 dirname = os.path.dirname(__file__)
 
-def baking(img,color,size,outputpath,outputname):
+start=time.time()
+counter=0
+
+def baking(img,color,size,outputpath,outputName):
+    #print(outputName)
     w, h = img.size
     for x in range(w):
         for y in range(h):
@@ -13,10 +18,16 @@ def baking(img,color,size,outputpath,outputname):
     img = img.resize((size,size), Image.NEAREST)
 
     if os.path.isdir(outputpath):
-        img.save(outputpath+outputname)
+        img.save(outputpath+outputName)
     else:
-        print(outputpath)
-        os.mkdir(os.path.join(outputpath))      
+        #print(outputpath)
+        os.mkdir(os.path.join(outputpath))
+        img.save(outputpath+outputName)
+
+    print(outputpath+outputName)
+    global counter
+    counter += 1
+    
 
 def mischmascher(img):
     w,h = img.size
@@ -30,153 +41,148 @@ def mischmascher(img):
                 if((r_prev!=r)&(g_prev!=g)&(b_prev!=b)):           #neue pixel anders als alte
                     imgnew.putpixel((y,x),(g_prev,r_prev,b_prev))
             r_prev, g_prev, b_prev = r,g,b
-    baking(img=imgnew, color=30, size=800, outputname="mischmasher")
+    baking(img=imgnew, color=30, size=800, outputName="mischmasher")
 
-def recolor(img, color1, color2, outputpath, output):
+def recolor(img, outputName, outputPath=None, color1=None, color2=None, black=(0,0,0),white=(248,248,248)):
     w, h = img.size
     img = img.convert('RGBA')
     imgV1=img.copy()
     imgV2=img.copy()
 
-    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
-    colorList = list(uniqueColors)
-    colorList=sorted(colorList, key=sum)
-
-    reducedList=colorList
-    reducedList=[x for x in reducedList if x[3] == 255] #macht alles weg außer die 4 gewünschten Farben   
-
-    reducedList.remove(reducedList[0])         #removes black
-    reducedList.remove(reducedList[-1])        #removes white
-
-    for x in range(w):
-        for y in range(h):
-            current_color = img.getpixel((x,y))
-            if (current_color == (reducedList[0])):
-                imgV1.putpixel((x,y), color1)
-                imgV2.putpixel((x,y), color2)
-            if (current_color == (reducedList[1])):
-                imgV1.putpixel((x,y), color2)
-                imgV2.putpixel((x,y), color1)
-    baking(img=imgV1, color=30, size=800, outputpath=outputpath,outputname=output+"v1.png")
-    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png") 
-
-
-def recolor3(img, bw, color1, color2, color3, outputpath, output):
-    w, h = img.size
-    img = img.convert('RGBA')
-    imgV1=img.copy()
-    imgV2=img.copy()
-
-    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
-    colorList = list(uniqueColors)
-    colorList=sorted(colorList, key=sum)
-
-    reducedList=colorList
-    reducedList=[x for x in reducedList if x[3] == 255] #macht alles weg außer die 4 gewünschten Farben   
-
-    print(reducedList)
-
-
-    reducedList.remove(reducedList[0])         #removes black
-    reducedList.remove(reducedList[-1])        #removes white
-
-    print(reducedList)
-    print('--------------')
-    #if(bw=None):
-        #reducedList.remove[0]
-    for x in range(w):
-        for y in range(h):
-            current_color = img.getpixel((x,y))
-            if (current_color == (reducedList[0])):
-                imgV1.putpixel((x,y), color1)
-                imgV2.putpixel((x,y), color2)
-            if (current_color == (reducedList[1])):
-                imgV1.putpixel((x,y), color2)
-                imgV2.putpixel((x,y), color1)
-    baking(img=imgV1, color=30, size=800, outputpath=outputpath,outputname=output+"v1.png")
-    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png")       
-
-
-    '''if (bw==None):
-        while (len(reducedList)>2):
-            for v in colorList:
-                if((v[0] >= 248) and (v[1] >= 248) and (v[2] >= 248)):          #weiß raus
-                    reducedList.remove(v)
-                    continue
-                if((v[0] <= 3) and (v[1] <= 3) and (v[2] <= 3)):                #schwarz raus
-                    reducedList.remove(v)
-                    continue
-                if ((v[3]==0)):
-                    reducedList.remove(v)
-                    continue
-
-    elif(bw=='white'):
-        while (len(reducedList)>3):
-            for v in colorList:
-                if((v[0] <= 3) and (v[1] <= 3) and (v[2] <= 3)):                #schwarz raus
-                    reducedList.remove(v)
-                    continue
-                if ((v[3]==0)):
-                    reducedList.remove(v)
-                    continue
-    elif(bw=='black'):
-        while (len(reducedList)>3):
-            for v in colorList:
-                if((v[0] >= 248) and (v[1] >= 248) and (v[2] >= 248)):          #weiß raus
-                    reducedList.remove(v)
-                    continue
-                if ((v[3]==0)):
-                    reducedList.remove(v)
-                    continue
     
+
+    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
+    colorList = list(uniqueColors)
+    colorList=sorted(colorList, key=sum)
+
+    reducedList=colorList
+    reducedList=[x for x in reducedList if x[3] == 255] #macht alles weg außer die 4 gewünschten Farben 
+
+    if (color1 == None):
+        color1 = reducedList[1]
+    if (color2 == None):
+        color2 = reducedList[2]
+
     for x in range(w):
         for y in range(h):
-                current_color = img.getpixel((x,y))
-                if (current_color == (reducedList[0])):
-                    imgV1.putpixel((x,y), color1)
-                    imgV2.putpixel((x,y), color2)
-                if (current_color == (reducedList[1])):
-                    imgV1.putpixel((x,y), color2)
-                    imgV2.putpixel((x,y), color1)
-    baking(img=imgV1, color=30, size=800, outputpath=outputpath,outputname=output+"v1.png")
-    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png")'''
 
+            current_color = img.getpixel((x,y))
+            if (current_color == (reducedList[0])):
+                imgV1.putpixel((x,y), black)
+                imgV2.putpixel((x,y), black)
+            if (current_color == (reducedList[1])):
+                imgV1.putpixel((x,y), color1)
+                imgV2.putpixel((x,y), color2)
+            if (current_color == (reducedList[2])):
+                imgV1.putpixel((x,y), color2)
+                imgV2.putpixel((x,y), color1)
+            if (current_color == (reducedList[3])):
+                imgV1.putpixel((x,y), white)
+                imgV2.putpixel((x,y), white)
+                
+    outputName=outputName[:-4]
+
+    if (outputPath==None):
+        outputPath="./Output/"
+    else:
+        outputPath="./Output/"+outputPath+"/"
+    baking(img=imgV1, color=30, size=800, outputpath=outputPath,outputName=outputName+"v1.png")
+    baking(img=imgV2, color=30, size=800, outputpath=outputPath, outputName=outputName+"v2.png")
+
+def kitty(timer=0, counter=0)
+    
 
 #Trans Pride Flagge
 transBlau=91,207,250
 transPink=245,170,185
 
 #NB Pride Flagge
-gelb=252,244,52
-lila=156,89,209
+nbGelb=252,244,52
+nbLila=156,89,209
 
 #Genderqueer Flagge
 genderLila=181,125,222
-gendergreen=74,129,35
+genderGrün=74,129,35
 
 #Asexual Flagge
-grey=163,163,163
-asexlila=130,0,129
+asexGrau=163,163,163
+asexLila=130,0,129
 
-sourcePath = './gen2/'
+#bisexual
+biPink=214,2,112
+biRosa=155,79,150
+biBlau=0,56,168
+
+#pan
+panPink=255,33,140
+panGelb=255,216,0
+panTürkis=33,177,255
 
 
-for filename in os.listdir("./gen2/"):
+
+
+sourcePath = "./testmon/"
+
+
+for filename in os.listdir(sourcePath):
     f = os.path.join(sourcePath, filename)
     if os.path.isfile(f):
-        #recolor(img=Image.open(f), color1=transBlau, color2=transPink, outputpath="./Output/trans/",output=filename[:-4])
-        #recolor(img=Image.open(f), color1=gelb, color2=lila, outputpath="./Output/nb/",output=filename[:-4])
-        #recolor(img=Image.open(f), color1=genderLila, color2=gendergreen, outputpath="./Output/queer/",output=filename[:-4])
-        recolor(img=Image.open(f), color1=grey, color2=asexlila, outputpath="./Output/testerl/",output=filename[:-4])
-        #print(f)
-        recolor3(img=Image.open(f), bw='black', color1=grey, color2=asexlila, color3=gelb, outputpath="./Output/asexuell/",output=filename[:-4])
+        recolor(img=Image.open(f), outputName=filename, outputPath="normal")
+
+        '''recolor(img=Image.open(f), outputName=filename, outputPath="trans", color1=transBlau, color2=transPink)
+        recolor(img=Image.open(f), outputName=filename, outputPath="nonbinary", color1=nbGelb, color2=nbLila)
+        recolor(img=Image.open(f), outputName=filename, outputPath="genderqueer", color1=genderLila, color2=genderGrün)
+        recolor(img=Image.open(f), outputName=filename, outputPath="asexuell", color1=asexGrau, color2=asexLila)
+
+        #DER BI BLOCK
+        recolor(img=Image.open(f), outputName=filename, outputPath="bi1", color1=biPink, color2=biRosa, black=biBlau)
+        recolor(img=Image.open(f), outputName=filename, outputPath="bi2", color1=biPink, color2=biRosa, white=biBlau)
+
+        recolor(img=Image.open(f), outputName=filename, outputPath="bi3", color1=biRosa, color2=biBlau, black=biPink)
+        recolor(img=Image.open(f), outputName=filename, outputPath="bi4", color1=biRosa, color2=biBlau, white=biPink)
+
+        recolor(img=Image.open(f), outputName=filename, outputPath="bi5", color1=biPink, color2=biBlau, white=biRosa)
+        recolor(img=Image.open(f), outputName=filename, outputPath="bi6", color1=biPink, color2=biBlau, black=biRosa)
+
+        #DER PAN BLOCK
+        recolor(img=Image.open(f), outputName=filename, outputPath="pan1", color1=panPink, color2=panGelb, black=panTürkis)
+        recolor(img=Image.open(f), outputName=filename, outputPath="pan2", color1=panPink, color2=panGelb, white=panTürkis)
+
+        recolor(img=Image.open(f), outputName=filename, outputPath="pan3", color1=panGelb, color2=panTürkis, black=panPink)
+        recolor(img=Image.open(f), outputName=filename, outputPath="pan4", color1=panGelb, color2=panTürkis, white=panPink)
+
+        recolor(img=Image.open(f), outputName=filename, outputPath="pan5", color1=panPink, color2=panTürkis, white=panGelb)
+        recolor(img=Image.open(f), outputName=filename, outputPath="pan6", color1=panPink, color2=panTürkis, black=panGelb)'''
+
+       
 
 
+
+
+end=time.time()
+timer=round(end-start)
+if (timer<60):
+    minuten=round(timer/60)
+    sekunden=timer%60
+    aussage=("♡♡♡♡ "+str(minuten)+ " Minuten & "+ str(sekunden)+" Sekunden Runtime für insgesamt "+str(counter) +" Bilder ♡♡♡♡")
+else:
+    aussage=("♡♡♡♡ "+str(timer)+" Sekunden Runtime für insgesamt "+str(counter) +" Bilder ♡♡♡♡")
+
+          
 print("""
+
+
+  ✦*͙*❥⃝∗⁎.ʚɞ.⁎∗❥⃝**͙✦
+
        ∧,,,∧
     (  ̳• · • ̳)
-    /    づ♡ Done!!!
-    """)  
+    /    づ     """+str(timer)+"""Sekunden Runtime für insgesamt """+str(counter) +""" Bilder
+    
+  ✦*͙*❥⃝∗⁎.ʚɞ.⁎∗❥⃝**͙✦
+  
+  """)
+
+
 
 
 
