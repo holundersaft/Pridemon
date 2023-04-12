@@ -37,24 +37,97 @@ def recolor(img, color1, color2, outputpath, output):
     img = img.convert('RGBA')
     imgV1=img.copy()
     imgV2=img.copy()
+
     uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
     colorList = list(uniqueColors)
+    colorList=sorted(colorList, key=sum)
+
     reducedList=colorList
-    #print(colorList)
-    while (len(reducedList)>2):
-        for v in colorList:
-            if((v[0] == 255) and (v[1] == 255) and (v[2] == 255)):      #transparenz raus
-                reducedList.remove(v)
-                continue
-            if((v[0] >= 248) and (v[1] >= 248) and (v[2] >= 248)):          #weiß raus
-                reducedList.remove(v)
-                continue
-            if((v[0] <= 3) and (v[1] <= 3) and (v[2] <= 3)):                #schwarz raus
-                reducedList.remove(v)
-                continue
-            if ((v[3]==0)):
-                reducedList.remove(v)
-                continue
+    reducedList=[x for x in reducedList if x[3] == 255] #macht alles weg außer die 4 gewünschten Farben   
+
+    reducedList.remove(reducedList[0])         #removes black
+    reducedList.remove(reducedList[-1])        #removes white
+
+    for x in range(w):
+        for y in range(h):
+            current_color = img.getpixel((x,y))
+            if (current_color == (reducedList[0])):
+                imgV1.putpixel((x,y), color1)
+                imgV2.putpixel((x,y), color2)
+            if (current_color == (reducedList[1])):
+                imgV1.putpixel((x,y), color2)
+                imgV2.putpixel((x,y), color1)
+    baking(img=imgV1, color=30, size=800, outputpath=outputpath,outputname=output+"v1.png")
+    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png") 
+
+
+def recolor3(img, bw, color1, color2, color3, outputpath, output):
+    w, h = img.size
+    img = img.convert('RGBA')
+    imgV1=img.copy()
+    imgV2=img.copy()
+
+    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
+    colorList = list(uniqueColors)
+    colorList=sorted(colorList, key=sum)
+
+    reducedList=colorList
+    reducedList=[x for x in reducedList if x[3] == 255] #macht alles weg außer die 4 gewünschten Farben   
+
+    print(reducedList)
+
+
+    reducedList.remove(reducedList[0])         #removes black
+    reducedList.remove(reducedList[-1])        #removes white
+
+    print(reducedList)
+    print('--------------')
+    #if(bw=None):
+        #reducedList.remove[0]
+    for x in range(w):
+        for y in range(h):
+            current_color = img.getpixel((x,y))
+            if (current_color == (reducedList[0])):
+                imgV1.putpixel((x,y), color1)
+                imgV2.putpixel((x,y), color2)
+            if (current_color == (reducedList[1])):
+                imgV1.putpixel((x,y), color2)
+                imgV2.putpixel((x,y), color1)
+    baking(img=imgV1, color=30, size=800, outputpath=outputpath,outputname=output+"v1.png")
+    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png")       
+
+
+    '''if (bw==None):
+        while (len(reducedList)>2):
+            for v in colorList:
+                if((v[0] >= 248) and (v[1] >= 248) and (v[2] >= 248)):          #weiß raus
+                    reducedList.remove(v)
+                    continue
+                if((v[0] <= 3) and (v[1] <= 3) and (v[2] <= 3)):                #schwarz raus
+                    reducedList.remove(v)
+                    continue
+                if ((v[3]==0)):
+                    reducedList.remove(v)
+                    continue
+
+    elif(bw=='white'):
+        while (len(reducedList)>3):
+            for v in colorList:
+                if((v[0] <= 3) and (v[1] <= 3) and (v[2] <= 3)):                #schwarz raus
+                    reducedList.remove(v)
+                    continue
+                if ((v[3]==0)):
+                    reducedList.remove(v)
+                    continue
+    elif(bw=='black'):
+        while (len(reducedList)>3):
+            for v in colorList:
+                if((v[0] >= 248) and (v[1] >= 248) and (v[2] >= 248)):          #weiß raus
+                    reducedList.remove(v)
+                    continue
+                if ((v[3]==0)):
+                    reducedList.remove(v)
+                    continue
     
     for x in range(w):
         for y in range(h):
@@ -66,7 +139,8 @@ def recolor(img, color1, color2, outputpath, output):
                     imgV1.putpixel((x,y), color2)
                     imgV2.putpixel((x,y), color1)
     baking(img=imgV1, color=30, size=800, outputpath=outputpath,outputname=output+"v1.png")
-    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png")
+    baking(img=imgV2, color=30, size=800, outputpath=outputpath, outputname=output+"v2.png")'''
+
 
 #Trans Pride Flagge
 transBlau=91,207,250
@@ -84,17 +158,19 @@ gendergreen=74,129,35
 grey=163,163,163
 asexlila=130,0,129
 
-sourcePath = './colfixed/'
+sourcePath = './gen2/'
 
 
-for filename in os.listdir("./colfixed/"):
+for filename in os.listdir("./gen2/"):
     f = os.path.join(sourcePath, filename)
     if os.path.isfile(f):
-        recolor(img=Image.open(f), color1=transBlau, color2=transPink, outputpath="./Output/trans/",output=filename[:3])
-        recolor(img=Image.open(f), color1=gelb, color2=lila, outputpath="./Output/nb/",output=filename[:3])
-        recolor(img=Image.open(f), color1=genderLila, color2=gendergreen, outputpath="./Output/queer/",output=filename[:3])
-        recolor(img=Image.open(f), color1=grey, color2=asexlila, outputpath="./Output/asexuell/",output=filename[:3])
-        print(f)
+        #recolor(img=Image.open(f), color1=transBlau, color2=transPink, outputpath="./Output/trans/",output=filename[:-4])
+        #recolor(img=Image.open(f), color1=gelb, color2=lila, outputpath="./Output/nb/",output=filename[:-4])
+        #recolor(img=Image.open(f), color1=genderLila, color2=gendergreen, outputpath="./Output/queer/",output=filename[:-4])
+        recolor(img=Image.open(f), color1=grey, color2=asexlila, outputpath="./Output/testerl/",output=filename[:-4])
+        #print(f)
+        recolor3(img=Image.open(f), bw='black', color1=grey, color2=asexlila, color3=gelb, outputpath="./Output/asexuell/",output=filename[:-4])
+
 
 print("""
        ∧,,,∧
