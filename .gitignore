@@ -1,8 +1,8 @@
 /.gitgnore
-/.cropper.py
-/.Ideen.txt
-/.my_awesome.gif
-/.pathmaker
+/cropper.py
+/Ideen.txt
+/my_awesome.gif
+/pathmaker
 .vscode/
 all/
 colFixed/
