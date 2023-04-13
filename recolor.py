@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 import time
+import random
 dirname = os.path.dirname(__file__)
 
 start=time.time()
@@ -190,6 +191,7 @@ for filename in os.listdir(sourcePath):
 
 colors=set()
 
+
 def colorParse(sourcePath, count):
 
     #cwd = os.getcwd()
@@ -202,11 +204,12 @@ def colorParse(sourcePath, count):
     colorsTup=[tup[1] for tup in img.getcolors(w*h)]
     colors=list(colorsTup)
     colors=sorted(colors, key=sum)
+    #random.shuffle(colors)
     #print(colors)
     return colors
 
 
-def rainbow(img,outputName,outputPath, rainbowPath="./Rainbow/", ):
+def rainbow(img,outputName,outputPath, rainbowPath="./pink/", ):
     w, h = img.size
     img = img.convert('RGBA')
     imgOut=img.copy()
@@ -215,19 +218,17 @@ def rainbow(img,outputName,outputPath, rainbowPath="./Rainbow/", ):
     colorListPokemon=sorted(colorListPokemon, key=sum)  
 
     reducedListPokemon=colorListPokemon
+
     reducedListPokemon=[x for x in reducedListPokemon if x[3] == 255] #removes transparency 
-    reducedListPokemon=[x for x in reducedListPokemon if not ((x[0] == 255) and (x[1] == 255) and (x[2] == 255))] #removes white
-    reducedListPokemon=[x for x in reducedListPokemon if not ((x[0] == 0) and (x[1] == 0) and (x[2] == 0))] #removes black
-    #reducedListPokemon.remove(reducedListPokemon[0])
+    reducedListPokemon.remove(reducedListPokemon[0])
+    reducedListPokemon.remove(reducedListPokemon[-1])
 
     count= len(reducedListPokemon)
-    #print(colorParse(rainbowPath, count))
     rainbowColors=colorParse(rainbowPath,count)
     for x in range(w):
         for y in range(h):
             current_color = img.getpixel((x,y))
             if (current_color in reducedListPokemon):
-                    #print(reducedListPokemon.index(current_color))
                     imgOut.putpixel((x,y), rainbowColors[reducedListPokemon.index(current_color)])
         
     outputName=outputName[:-4]
@@ -242,7 +243,8 @@ def rainbow(img,outputName,outputPath, rainbowPath="./Rainbow/", ):
 
 for filename in os.listdir(gen5):
     f = os.path.join(gen5, filename)
-    rainbow(img=Image.open(f), outputName=filename, outputPath="gay",rainbowPath="./Rainbow")
+    rainbow(img=Image.open(f), outputName=filename, outputPath="pink",rainbowPath="./pink/")
+    rainbow(img=Image.open(f), outputName=filename, outputPath="gay",rainbowPath="./Rainbow/")
         
 
 
