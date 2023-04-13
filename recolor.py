@@ -42,7 +42,7 @@ def mischmascher(img):
             r_prev, g_prev, b_prev = r,g,b
     baking(img=imgnew, color=30, size=800, outputName="mischmasher")
 
-def recolor(img, outputName, outputPath=None, color1=None, color2=None, black=(0,0,0),white=(248,248,248)):
+def gen2(img, outputName, outputPath=None, color1=None, color2=None, black=(0,0,0),white=(248,248,248)):
     w, h = img.size
     img = img.convert('RGBA')
     imgV1=img.copy()
@@ -154,39 +154,38 @@ panTürkis=33,177,255
 
 sourcePath = "./all/"
 
-
+'''
 for filename in os.listdir(sourcePath):
     f = os.path.join(sourcePath, filename)
     if os.path.isfile(f):
-        recolor(img=Image.open(f), outputName=filename, outputPath="normal")
+        gen2(img=Image.open(f), outputName=filename, outputPath="normal")
 
-        recolor(img=Image.open(f), outputName=filename, outputPath="trans", color1=transBlau, color2=transPink)
-        recolor(img=Image.open(f), outputName=filename, outputPath="nonbinary", color1=nbGelb, color2=nbLila)
-        recolor(img=Image.open(f), outputName=filename, outputPath="genderqueer", color1=genderLila, color2=genderGrün)
-        recolor(img=Image.open(f), outputName=filename, outputPath="asexuell", color1=asexGrau, color2=asexLila)
+        gen2(img=Image.open(f), outputName=filename, outputPath="trans", color1=transBlau, color2=transPink)
+        gen2(img=Image.open(f), outputName=filename, outputPath="nonbinary", color1=nbGelb, color2=nbLila)
+        gen2(img=Image.open(f), outputName=filename, outputPath="genderqueer", color1=genderLila, color2=genderGrün)
+        gen2(img=Image.open(f), outputName=filename, outputPath="asexuell", color1=asexGrau, color2=asexLila)
 
         #DER BI BLOCK
-        recolor(img=Image.open(f), outputName=filename, outputPath="bi1", color1=biPink, color2=biRosa, black=biBlau)
-        recolor(img=Image.open(f), outputName=filename, outputPath="bi2", color1=biPink, color2=biRosa, white=biBlau)
+        gen2(img=Image.open(f), outputName=filename, outputPath="bi1", color1=biPink, color2=biRosa, black=biBlau)
+        gen2(img=Image.open(f), outputName=filename, outputPath="bi2", color1=biPink, color2=biRosa, white=biBlau)
 
-        recolor(img=Image.open(f), outputName=filename, outputPath="bi3", color1=biRosa, color2=biBlau, black=biPink)
-        recolor(img=Image.open(f), outputName=filename, outputPath="bi4", color1=biRosa, color2=biBlau, white=biPink)
+        gen2(img=Image.open(f), outputName=filename, outputPath="bi3", color1=biRosa, color2=biBlau, black=biPink)
+        gen2(img=Image.open(f), outputName=filename, outputPath="bi4", color1=biRosa, color2=biBlau, white=biPink)
 
-        recolor(img=Image.open(f), outputName=filename, outputPath="bi5", color1=biPink, color2=biBlau, white=biRosa)
-        recolor(img=Image.open(f), outputName=filename, outputPath="bi6", color1=biPink, color2=biBlau, black=biRosa)
+        gen2(img=Image.open(f), outputName=filename, outputPath="bi5", color1=biPink, color2=biBlau, white=biRosa)
+        gen2(img=Image.open(f), outputName=filename, outputPath="bi6", color1=biPink, color2=biBlau, black=biRosa)
 
         #DER PAN BLOCK
-        recolor(img=Image.open(f), outputName=filename, outputPath="pan1", color1=panPink, color2=panGelb, black=panTürkis)
-        recolor(img=Image.open(f), outputName=filename, outputPath="pan2", color1=panPink, color2=panGelb, white=panTürkis)
+        gen2(img=Image.open(f), outputName=filename, outputPath="pan1", color1=panPink, color2=panGelb, black=panTürkis)
+        gen2(img=Image.open(f), outputName=filename, outputPath="pan2", color1=panPink, color2=panGelb, white=panTürkis)
 
-        recolor(img=Image.open(f), outputName=filename, outputPath="pan3", color1=panGelb, color2=panTürkis, black=panPink)
-        recolor(img=Image.open(f), outputName=filename, outputPath="pan4", color1=panGelb, color2=panTürkis, white=panPink)
+        gen2(img=Image.open(f), outputName=filename, outputPath="pan3", color1=panGelb, color2=panTürkis, black=panPink)
+        gen2(img=Image.open(f), outputName=filename, outputPath="pan4", color1=panGelb, color2=panTürkis, white=panPink)
 
-        recolor(img=Image.open(f), outputName=filename, outputPath="pan5", color1=panPink, color2=panTürkis, white=panGelb)
-        recolor(img=Image.open(f), outputName=filename, outputPath="pan6", color1=panPink, color2=panTürkis, black=panGelb)
-
+        gen2(img=Image.open(f), outputName=filename, outputPath="pan5", color1=panPink, color2=panTürkis, white=panGelb)
+        gen2(img=Image.open(f), outputName=filename, outputPath="pan6", color1=panPink, color2=panTürkis, black=panGelb)
+'''
        
-
 
 
 
