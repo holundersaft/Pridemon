@@ -152,7 +152,7 @@ panTürkis=33,177,255
 
 
 
-gen5="./gen5/"
+gen5="./testmon/"
 sourcePath = "./all/"
 
 '''
@@ -188,34 +188,62 @@ for filename in os.listdir(sourcePath):
 '''
        
 
+colors=set()
+
+def colorParse(sourcePath, count):
+
+    #cwd = os.getcwd()
+    file=str(count)+".png"
+    f = os.path.join(sourcePath, file)
+    #print(f)
+    img= Image.open(f)
+    img.convert('RGBA')
+    w,h=img.size
+    colorsTup=[tup[1] for tup in img.getcolors(w*h)]
+    colors=list(colorsTup)
+    colors=sorted(colors, key=sum)
+    #print(colors)
+    return colors
 
 
-def rainbow(img):
+def rainbow(img,outputName,outputPath, rainbowPath="./Rainbow/", ):
     w, h = img.size
     img = img.convert('RGBA')
     imgOut=img.copy()
-    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
-    colorList = list(uniqueColors)
-    colorList=sorted(colorList, key=sum)
-    print(colorList)    
+    uniqueColorsPokemon=[tup[1] for tup in img.getcolors(w*h)]
+    colorListPokemon = list(uniqueColorsPokemon)
+    colorListPokemon=sorted(colorListPokemon, key=sum)  
 
-def paletteCounter(img):
-    w, h = img.size
-    img = img.convert('RGBA')
-    imgOut=img.copy()
-    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
-    colorList = list(uniqueColors)
-    lenght=len(uniqueColors)
-    colorList=sorted(colorList, key=sum)
+    reducedListPokemon=colorListPokemon
+    reducedListPokemon=[x for x in reducedListPokemon if x[3] == 255] #removes transparency 
+    reducedListPokemon=[x for x in reducedListPokemon if not ((x[0] == 255) and (x[1] == 255) and (x[2] == 255))] #removes white
+    reducedListPokemon=[x for x in reducedListPokemon if not ((x[0] == 0) and (x[1] == 0) and (x[2] == 0))] #removes black
+    #reducedListPokemon.remove(reducedListPokemon[0])
+
+    count= len(reducedListPokemon)
+    #print(colorParse(rainbowPath, count))
+    rainbowColors=colorParse(rainbowPath,count)
+    for x in range(w):
+        for y in range(h):
+            current_color = img.getpixel((x,y))
+            if (current_color in reducedListPokemon):
+                    #print(reducedListPokemon.index(current_color))
+                    imgOut.putpixel((x,y), rainbowColors[reducedListPokemon.index(current_color)])
+        
+    outputName=outputName[:-4]
+    if (outputPath==None):
+        outputPath="./Output/"
+    else:
+        outputPath="./Output/"+outputPath+"/"
     
-    print(lenght)    
+    baking(img=imgOut, color=30, size=800, outputpath=outputPath,outputName=outputName+".png") 
+
 
 
 for filename in os.listdir(gen5):
     f = os.path.join(gen5, filename)
-    if os.path.isfile(f):
-        #rainbow(img=Image.open(f))
-        paletteCounter(img=Image.open(f))
+    rainbow(img=Image.open(f), outputName=filename, outputPath="gay",rainbowPath="./Rainbow")
+        
 
 
 end=time.time()
