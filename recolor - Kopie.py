@@ -152,7 +152,7 @@ panTürkis=33,177,255
 
 
 
-gen5="./gen5/"
+
 sourcePath = "./all/"
 
 '''
@@ -188,34 +188,6 @@ for filename in os.listdir(sourcePath):
 '''
        
 
-
-
-def rainbow(img):
-    w, h = img.size
-    img = img.convert('RGBA')
-    imgOut=img.copy()
-    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
-    colorList = list(uniqueColors)
-    colorList=sorted(colorList, key=sum)
-    print(colorList)    
-
-def paletteCounter(img):
-    w, h = img.size
-    img = img.convert('RGBA')
-    imgOut=img.copy()
-    uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
-    colorList = list(uniqueColors)
-    lenght=len(uniqueColors)
-    colorList=sorted(colorList, key=sum)
-    
-    print(lenght)    
-
-
-for filename in os.listdir(gen5):
-    f = os.path.join(gen5, filename)
-    if os.path.isfile(f):
-        #rainbow(img=Image.open(f))
-        paletteCounter(img=Image.open(f))
 
 
 end=time.time()

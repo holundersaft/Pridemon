@@ -1,2 +1,13 @@
-/pathmaker.py
-.vscode
+/.gitgnore
+/.cropper.py
+/.Ideen.txt
+/.my_awesome.gif
+/.pathmaker
+.vscode/
+all/
+colFixed/
+gen2/
+gen5/
+Pokemon/
+testmon/
+testGif/
