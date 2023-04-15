@@ -1,4 +1,5 @@
 from PIL import Image
+import colorgram
 import os
 import time
 import random
@@ -53,7 +54,7 @@ def gen2(img, outputName, outputPath=None, color1=None, color2=None, black=(0,0,
 
     uniqueColors=[tup[1] for tup in img.getcolors(w*h)]
     colorList = list(uniqueColors)
-    colorList=sorted(colorList, key=sum)
+    colorList=sorted(colorList, key=getLighntess)
 
     reducedList=colorList
     reducedList=[x for x in reducedList if x[3] == 255] #macht alles weg außer die 4 gewünschten Farben 
@@ -153,7 +154,7 @@ panTürkis=33,177,255
 
 
 
-gen5="./testmon/"
+gen5="./gen5/"
 sourcePath = "./all/"
 
 '''
@@ -191,22 +192,38 @@ for filename in os.listdir(sourcePath):
 
 colors=set()
 
+def getLighntess(color):
+    return(color[0] * 0.299 + color[1] * 0.587 + color[2] * 0.114)
+
+
 
 def colorParse(sourcePath, count):
 
-    #cwd = os.getcwd()
-    file=str(count)+".png"
-    f = os.path.join(sourcePath, file)
-    #print(f)
-    img= Image.open(f)
-    img.convert('RGBA')
-    w,h=img.size
-    colorsTup=[tup[1] for tup in img.getcolors(w*h)]
-    colors=list(colorsTup)
-    colors=sorted(colors, key=sum)
-    #random.shuffle(colors)
+    colors = colorgram.extract(sourcePath, count)
     #print(colors)
-    return colors
+    palette = []
+
+    #kein schwarz und weiß
+    for color in colors:
+        if color.rgb[0] > 5 or color.rgb[1] > 5 or color.rgb[2] > 5:
+            if color.rgb[0] < 250 or color.rgb[1] < 250 or color.rgb[2] < 250:
+                palette.append(color.rgb)
+                #random.shuffle(palette)
+
+    # If there are not enough colors in the palette, create a gradient using the colors present in the image
+    while len(palette) < count:
+        palette_length = len(palette)
+        for i in range(palette_length):
+            for j in range(palette_length):
+                if i != j:
+                    new_color = tuple((int(palette[i][k] + palette[j][k]) // 2 for k in range(3)))
+                    if new_color not in palette:
+                        palette.append(new_color)
+                    if len(palette) == count:
+                        break
+            if len(palette) == count:
+                break
+    return (sorted(palette[:count], key=getLighntess))
 
 
 def rainbow(img,outputName,outputPath, rainbowPath="./pink/", ):
@@ -215,7 +232,7 @@ def rainbow(img,outputName,outputPath, rainbowPath="./pink/", ):
     imgOut=img.copy()
     uniqueColorsPokemon=[tup[1] for tup in img.getcolors(w*h)]
     colorListPokemon = list(uniqueColorsPokemon)
-    colorListPokemon=sorted(colorListPokemon, key=sum)  
+    colorListPokemon=sorted(colorListPokemon, key=getLighntess)  
 
     reducedListPokemon=colorListPokemon
 
@@ -239,12 +256,24 @@ def rainbow(img,outputName,outputPath, rainbowPath="./pink/", ):
     
     baking(img=imgOut, color=30, size=800, outputpath=outputPath,outputName=outputName+".png") 
 
+def getPalette(imgpath):
+    img = Image.open(imgpath)
+    colors = img.getcolors(img.size[0] * img.size[1])
+    palette = Image.new('RGB', (len(colors), 1))
+    for i, color in enumerate(colors):
+        palette.putpixel((i, 0), color[1])
+    #print(colors)
+    return palette
 
 
-for filename in os.listdir(gen5):
-    f = os.path.join(gen5, filename)
-    rainbow(img=Image.open(f), outputName=filename, outputPath="pink",rainbowPath="./pink/")
-    rainbow(img=Image.open(f), outputName=filename, outputPath="gay",rainbowPath="./Rainbow/")
+
+
+fixedpalette=getPalette("./Reference/otti.png")
+
+for filename in os.listdir("./gen5/"):
+    f = os.path.join("./gen5/", filename)
+    rainbow(img=Image.open(f), outputName=filename, outputPath="OutputPath",rainbowPath=fixedpalette)
+    #rainbow(img=Image.open(f), outputName=filename, outputPath="gay",rainbowPath="./Rainbow/")
         
 
 

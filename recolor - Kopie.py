@@ -1,6 +1,7 @@
 from PIL import Image
 import os
 import time
+import random
 dirname = os.path.dirname(__file__)
 
 start=time.time()
@@ -152,7 +153,7 @@ panTürkis=33,177,255
 
 
 
-
+gen5="./gen5/"
 sourcePath = "./all/"
 
 '''
@@ -188,6 +189,63 @@ for filename in os.listdir(sourcePath):
 '''
        
 
+colors=set()
+
+
+def colorParse(sourcePath, count):
+
+    #cwd = os.getcwd()
+    file=str(count)+".png"
+    f = os.path.join(sourcePath, file)
+    #print(f)
+    img= Image.open(f)
+    img.convert('RGBA')
+    w,h=img.size
+    colorsTup=[tup[1] for tup in img.getcolors(w*h)]
+    colors=list(colorsTup)
+    colors=sorted(colors, key=sum)
+    #random.shuffle(colors)
+    #print(colors)
+    return colors
+
+
+def rainbow(img,outputName,outputPath, rainbowPath="./pink/", ):
+    w, h = img.size
+    img = img.convert('RGBA')
+    imgOut=img.copy()
+    uniqueColorsPokemon=[tup[1] for tup in img.getcolors(w*h)]
+    colorListPokemon = list(uniqueColorsPokemon)
+    colorListPokemon=sorted(colorListPokemon, key=sum)  
+
+    reducedListPokemon=colorListPokemon
+
+    reducedListPokemon=[x for x in reducedListPokemon if x[3] == 255] #removes transparency 
+    reducedListPokemon.remove(reducedListPokemon[0])
+    reducedListPokemon.remove(reducedListPokemon[-1])
+
+    count= len(reducedListPokemon)
+    rainbowColors=colorParse(rainbowPath,count)
+    for x in range(w):
+        for y in range(h):
+            current_color = img.getpixel((x,y))
+            if (current_color in reducedListPokemon):
+                    imgOut.putpixel((x,y), rainbowColors[reducedListPokemon.index(current_color)])
+        
+    outputName=outputName[:-4]
+    if (outputPath==None):
+        outputPath="./Output/"
+    else:
+        outputPath="./Output/"+outputPath+"/"
+    
+    baking(img=imgOut, color=30, size=800, outputpath=outputPath,outputName=outputName+".png") 
+
+
+
+for filename in os.listdir(gen5):
+    f = os.path.join(gen5, filename)
+    rainbow(img=Image.open(f), outputName=filename, outputPath="pink",rainbowPath="./pink/")
+    rainbow(img=Image.open(f), outputName=filename, outputPath="gay",rainbowPath="./Rainbow/")
+        
 
 
 end=time.time()
